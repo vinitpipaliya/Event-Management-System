@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const { viewRecord, adminLogin, updateRecord, deleteRecord, createEvent, viewEvent, updateEvent, deleteEvent } = require('../Controller/adminLoginController')
+const { viewRecord, adminLogin, updateRecord, deleteRecord, createEvent, viewEvent, updateEvent, deleteEvent, vipbooking, fetchData } = require('../Controller/adminLoginController')
 const { checkAdminLogin, checkUserDatabase, checkEventDatabase, } = require("../Middleware/adminLoginMiddleware")
 router.post('/', adminLogin)
 router.get('/', checkAdminLogin, checkUserDatabase, viewRecord)
@@ -10,5 +10,7 @@ router.post('/Event', checkAdminLogin, createEvent)
 router.get('/Event', checkAdminLogin, viewEvent)
 router.put('/Event', checkAdminLogin, updateEvent)
 router.delete('/Event', checkAdminLogin, deleteEvent)
+router.post('/booking', vipbooking)
+router.get('/booking', fetchData)
 
 module.exports = router;

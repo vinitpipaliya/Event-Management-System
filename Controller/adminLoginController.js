@@ -1,7 +1,7 @@
 var adminloginflag = { value: false };
 const userRegistrationModel = require('../Model/userRegistrationModel')
 const eventModel = require('../Model/adminLoginModel')
-
+const vipBookingModel = require('../Model/vipBookingModel')
 
 exports.adminLogin = (req, res) => {
     const data = req.body;
@@ -119,6 +119,64 @@ exports.deleteEvent = (req, res) => {
             message: "Inserted id is successfully deleted."
         })
     })
+}
+
+exports.vipbooking = (req, res) => {
+    try {
+        const data = req.body
+        const vipMode = new vipBookingModel(data)
+        vipMode.save((err, data) => {
+            if (err) {
+                return res.status(400).json({
+                    err: "Not able to save in database. " + err
+                })
+            }
+            else {
+                return res.status(200).send({
+                    message: "Booking is successsfully completed."
+                })
+            }
+        })
+    }
+    catch (err) {
+        return res.status(400).json({
+            Problem: "Problem " + err
+        })
+    }
+}
+
+
+//Lookup in its own model
+exports.fetchData = (req, res) => {
+    try {
+        const data = req.body
+        vipBookingModel.aggregate([
+            {
+                $lookup: {
+                    from: "vipbookings",
+                    localField: "_id",
+                    foreignField: "user_id",
+                    as: "vipBooking"
+                }
+            },
+        ]).exec((err, data) => {
+            if (err) {
+                return res.status(400).json({
+                    err: "Not able to find in database. " + err
+                })
+            }
+            else {
+                return res.status(200).send({
+                    DATA: data
+                })
+            }
+        })
+    }
+    catch (err) {
+        return res.status(400).json({
+            Problem: "Problem " + err
+        })
+    }
 }
 
 exports.adminloginflag = adminloginflag
